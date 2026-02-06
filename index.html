@@ -5,198 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>幸運大抽獎</title>
     <style>
-        body { font-family: 'Arial', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(to right, #ece9e6, #ffffff); margin: 0; overflow: hidden; }
-
-        .game-container { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-
-        /* 輪盤容器 */
-        #wheel-container {
-            width: 350px;
-            height: 350px;
-            position: relative;
-            border-radius: 50%;
-            overflow: hidden; /* 確保內容不溢出 */
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
-            margin-bottom: 30px;
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: #f0f2f5; margin: 0; }
+        
+        .container { position: relative; width: 350px; height: 350px; box-shadow: 0 0 20px rgba(0,0,0,0.1); border-radius: 50%; } /* 增加陰影和圓角 */
+        
+        /* 指針 */
+        .pointer {
+            position: absolute;
+            top: -15px; /* 調整指針位置 */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 30px solid #e63946; /* 修正為向下指的指針 */
+            z-index: 10;
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.3)); /* 增加指針陰影 */
         }
 
-        /* 輪盤外觀 */
         #wheel {
             width: 100%;
             height: 100%;
-            border-radius: 50%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            transition: transform 4s cubic-bezier(0.2, 0, 0.2, 1); /* 更平滑的動畫 */
-            background: conic-gradient(
-                #FFD700 0% 1%,      /* A: 金色 */
-                #FF4500 1% 5%,      /* B: 橘紅 */
-                #1E90FF 5% 13%,     /* C: 藍色 */
-                #32CD32 13% 30%,    /* D: 綠色 */
-                #808080 30% 100%    /* E: 灰色 */
-            );
-            transform-origin: center center;
-        }
-
-        /* 獎項文字區塊 */
-        .prize-segment {
-            position: absolute;
-            width: 50%; /* 每個扇形從中心點開始 */
-            height: 50%;
-            top: 0;
-            left: 50%;
-            transform-origin: 0% 100%; /* 設定旋轉中心在底部中點 */
-            display: flex;
-            align-items: flex-start; /* 文字靠近外圍 */
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            font-size: 1.1em;
-            padding-top: 20px; /* 讓文字不要太靠近中心 */
-            box-sizing: border-box;
-            pointer-events: none; /* 讓點擊穿透到輪盤 */
-        }
-
-        /* 調整每個獎項的旋轉角度，使其位於正確的扇形中 */
-        .prize-segment.A { transform: rotate(270deg) skewY(89deg); color: #333; } /* A獎，調整顏色讓它在金色區塊更明顯 */
-        .prize-segment.B { transform: rotate(273deg) skewY(87deg); }
-        .prize-segment.C { transform: rotate(279deg) skewY(85deg); }
-        .prize-segment.D { transform: rotate(295deg) skewY(80deg); }
-        .prize-segment.E { transform: rotate(330deg) skewY(70deg); }
-
-
-        /* 指針 */
-        #pointer {
-            width: 0;
-            height: 0;
-            border-left: 18px solid transparent; /* 加寬指針 */
-            border-right: 18px solid transparent;
-            border-bottom: 40px solid #e63946; /* 更顯眼的紅色 */
-            position: absolute;
-            top: -20px; /* 調整指針位置 */
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            filter: drop-shadow(0 0 5px rgba(0,0,0,0.3));
-        }
-
-        .controls { margin-top: 20px; text-align: center; }
-        button {
-            padding: 12px 35px;
-            font-size: 20px;
-            cursor: pointer;
-            background: #e63946;
-            color: white;
-            border: none;
-            border-radius: 30px; /* 更圓潤的按鈕 */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-            font-weight: bold;
-        }
-        button:hover { background: #d62d3c; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.3); }
-        button:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
-
-        #result { margin-top: 25px; font-size: 28px; font-weight: bold; color: #2a9d8f; min-height: 40px; text-align: center; }
-    </style>
-</head>
-<body>
-
-    <div class="game-container">
-        <div id="pointer"></div>
-        <div id="wheel-container">
-            <div id="wheel">
-                <div class="prize-segment A">A獎</div>
-                <div class="prize-segment B">B獎</div>
-                <div class="prize-segment C">C獎</div>
-                <div class="prize-segment D">D獎</div>
-                <div class="prize-segment E">E獎</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="controls">
-        <button id="drawBtn">點我抽獎！</button>
-        <div id="result"></div>
-    </div>
-
-    <script>
-        const wheel = document.getElementById('wheel');
-        const btn = document.getElementById('drawBtn');
-        const resultText = document.getElementById('result');
-
-        // 定義獎項與機率區間 (由小到大累加)
-        // deg 代表該獎項「預計」停下來時，指針應指向的角度 (輪盤的絕對角度)
-        // 0度在最右邊，逆時針轉，但我們的指針在上方，所以目標點的角度需要換算
-        // 為了讓指針指向獎項「中間」，我會給一個大概的平均角度
-        const prizes = [
-            { name: "A獎 (超級大獎)", weight: 1,  startAngle: 0, endAngle: 3.6, targetDeg: 358.2 },   // 1% (3.6度)
-            { name: "B獎", weight: 4,  startAngle: 3.6, endAngle: 18, targetDeg: 342 },     // 4% (14.4度)
-            { name: "C獎", weight: 8,  startAngle: 18, endAngle: 46.8, targetDeg: 311.4 },   // 8% (28.8度)
-            { name: "D獎", weight: 17, startAngle: 46.8, endAngle: 108, targetDeg: 255.6 },  // 17% (61.2度)
-            { name: "E獎 (銘謝惠顧)", weight: 70, startAngle: 108, endAngle: 360, targetDeg: 126 }   // 70% (252度)
-        ];
-
-        let currentRotation = 0; // 紀錄當前輪盤累積的旋轉角度
-
-        btn.addEventListener('click', () => {
-            btn.disabled = true;
-            resultText.innerText = "旋轉中...";
-
-            const random = Math.random() * 100; // 0-99.999...
-            let selectedPrize = null;
-
-            // 根據機率判斷中獎項目
-            let cumulativeWeight = 0;
-            for (let i = 0; i < prizes.length; i++) {
-                cumulativeWeight += prizes[i].weight;
-                if (random < cumulativeWeight) {
-                    selectedPrize = prizes[i];
-                    break;
-                }
-            }
-            
-            // 計算目標角度
-            // 讓指針指向獎項區塊中間位置，並增加隨機性
-            // 由於指針在上方，而我們希望輪盤上的文字轉到指針下方，所以需要計算角度偏移
-            // 輪盤的0度位置在右側，逆時針增加。
-            // 指針在上方，對應輪盤的270度位置 (或 -90度)。
-            // 所以目標角度是 (270度 - selectedPrize.targetDeg + 360) % 360
-            
-            // 這裡我簡化一下邏輯：讓 selectedPrize.targetDeg 就是指針應指向輪盤上哪個角度。
-            // 我們希望輪盤的「獎項中心點」轉到指針下方。
-            // 例如 A獎 (targetDeg ~358度)，我們希望它轉到指針下方，
-            // 也就是輪盤的 270度位置。
-            // 所以輪盤最終的狀態應該是 (270 - selectedPrize.targetDeg) % 360 的方向
-            
-            // 為了視覺效果，先轉個幾圈 (例如 5 圈)
-            const baseRotations = 5 * 360;
-            
-            // 確保目標角度落在獎項範圍內並帶有隨機性
-            // (270度是輪盤正上方指針的位置)
-            const prizeSegmentStart = selectedPrize.startAngle;
-            const prizeSegmentEnd = selectedPrize.endAngle;
-            const targetAngleWithinSegment = prizeSegmentStart + (Math.random() * (prizeSegmentEnd - prizeSegmentStart));
-            
-            // 我們希望輪盤旋轉，使得 targetAngleWithinSegment 轉到指針的位置 (270度)
-            // 所以實際旋轉的角度是 baseRotations + (270 - targetAngleWithinSegment + 360) % 360
-            // 這裡 +360 是為了避免負數
-            
-            const finalAngleForPointer = (270 - targetAngleWithinSegment + 360) % 360; // 這是輪盤最後應該停在的角度
-
-            // 為了讓每次都是順時針轉動，且能持續累積轉動角度
-            // currentRotation 每次都會增加，確保輪盤不會逆時針轉回去
-            const newRotation = currentRotation + (baseRotations + (finalAngleForPointer - (currentRotation % 360) + 360) % 360);
-            currentRotation = newRotation;
-            
-            wheel.style.transform = `rotate(${currentRotation}deg)`;
-
-            setTimeout(() => {
-                resultText.innerText = `恭喜獲得：${selectedPrize.name}`;
-                btn.disabled = false;
-            }, 4000); // 4秒後顯示結果 (與 CSS transition 時間一致)
-        });
-    </script>
-</body>
-</html>
+            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
+            /* 讓
