@@ -3,23 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>好時代衛浴 新春活動幸運大轉盤</title>
+    <title>好時代衛浴 - 新春活動幸運大轉盤</title>
     <style>
-        /* CSS 部分保持不變，維持您要求的標題顏色與樣式 */
-        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f4f4f4; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-        .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 450px; }
-        .title-line1 { color: #1e90ff; font-size: 28px; font-weight: bold; margin: 0; display: block; }
-        .title-line2 { color: #1e90ff; font-size: 28px; font-weight: bold; margin: 5px 0 0 0; display: block; }
-        .subtitle { color: #666; margin: 10px 0 30px; font-size: 16px; }
-        .wheel-container { position: relative; width: 320px; height: 320px; margin: 0 auto 30px; }
-        #wheel { width: 100%; height: 100%; border-radius: 50%; transform: rotate(-90deg); }
-        .pointer-box { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(0deg); width: 50px; height: 50px; z-index: 10; }
-        .pointer-svg { width: 100%; height: 100%; filter: drop-shadow(0 -2px 5px rgba(0,0,0,0.2)); }
-        button { background: #ff6600; color: white; border: none; padding: 12px 60px; font-size: 20px; font-weight: bold; border-radius: 50px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3); }
+        body {
+            font-family: "Microsoft JhengHei", sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+        }
+
+        /* 標題樣式調整 */
+        .title-line1 {
+            color: #1e90ff;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+            display: block;
+        }
+        .title-line2 {
+            color: #1e90ff;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 5px 0 0 0;
+            display: block;
+        }
+
+        .subtitle { color: #666; margin: 15px 0 25px; font-size: 16px; }
+
+        .wheel-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 0 auto 30px;
+        }
+
+        #wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            transform: rotate(-90deg);
+        }
+
+        /* 指針：尖端朝上 */
+        .pointer-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(0deg); 
+            width: 50px;
+            height: 50px;
+            z-index: 10;
+        }
+
+        .pointer-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 -2px 5px rgba(0,0,0,0.2));
+        }
+
+        button {
+            background: #ff6600; /* 按鈕維持橘色較醒目，若要改藍色可改為 #1e90ff */
+            color: white;
+            border: none;
+            padding: 12px 60px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+        }
+
         button:hover { background: #e65c00; transform: scale(1.05); }
         button:disabled { background: #ccc; cursor: not-allowed; }
-        #result { margin-top: 20px; font-size: 18px; font-weight: bold; color: #333; min-height: 24px; }
-        .test-mode { margin-top: 10px; font-size: 12px; color: #e74c3c; }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            min-height: 24px;
+        }
+        .test-mode {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #e74c3c;
+        }
     </style>
 </head>
 <body>
@@ -27,7 +110,8 @@
 <div class="card">
     <span class="title-line1">好時代衛浴</span>
     <span class="title-line2">新春活動幸運大轉盤</span>
-    <p class="subtitle">單筆消費滿 $8,888 即可啟動幸運輪盤</p>
+    
+    <p class="subtitle">單筆消費滿 $8,888 即可啟動</p>
 
     <div class="wheel-container">
         <div class="pointer-box">
@@ -45,6 +129,7 @@
 </div>
 
 <script>
+    // 測試模式下自動清除紀錄
     localStorage.removeItem('myResult');
 
     const canvas = document.getElementById('wheel');
@@ -63,47 +148,37 @@
     const totalWeight = prizes.reduce((sum, p) => sum + p.weight, 0);
     let isSpinning = false;
 
-    // --- 修改重點：繪製不等大的扇形 ---
     function drawWheel() {
-        let currentAngle = 0;
+        const numPrizes = prizes.length;
+        const arc = (Math.PI * 2) / numPrizes;
 
         prizes.forEach((p, i) => {
-            // 根據權重計算該獎項佔據的角度 (弧度制)
-            const arc = (p.weight / totalWeight) * (Math.PI * 2);
-            
+            const angle = i * arc;
             ctx.beginPath();
             ctx.fillStyle = p.color;
             ctx.moveTo(300, 300);
-            ctx.arc(300, 300, 300, currentAngle, currentAngle + arc);
+            ctx.arc(300, 300, 300, angle, angle + arc);
             ctx.fill();
             ctx.strokeStyle = "#ddd";
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 2;
             ctx.stroke();
 
-            // 畫文字
             ctx.save();
             ctx.translate(300, 300);
-            ctx.rotate(currentAngle + arc / 2);
+            ctx.rotate(angle + arc / 2);
             ctx.textAlign = "right";
             ctx.fillStyle = (p.color === '#ffffff') ? '#ff6600' : '#ffffff';
-            
-            // 如果扇形太小 (如 A賞 1%)，縮小字體以免重疊
-            const fontSize = p.weight < 5 ? "24px" : "40px";
-            ctx.font = `bold ${fontSize} Microsoft JhengHei`;
-            
-            ctx.fillText(p.name.split(':')[0], 250, 10);
+            ctx.font = "bold 40px Microsoft JhengHei";
+            ctx.fillText(p.name.split(':')[0], 250, 15);
             ctx.restore();
-
-            currentAngle += arc; // 累加角度給下一個獎項
         });
     }
 
     function getWeightedResult() {
         let random = Math.random() * totalWeight;
-        let cumulativeWeight = 0;
         for (let i = 0; i < prizes.length; i++) {
-            cumulativeWeight += prizes[i].weight;
-            if (random < cumulativeWeight) return i;
+            if (random < prizes[i].weight) return i;
+            random -= prizes[i].weight;
         }
         return prizes.length - 1;
     }
@@ -114,19 +189,11 @@
         spinBtn.disabled = true;
         
         const prizeIndex = getWeightedResult();
+        const segmentDeg = 360 / prizes.length;
         
-        // 計算旋轉度數
-        // 我們需要計算「目標獎項中心點」在圓盤上的角度
-        let targetCenterWeight = 0;
-        for(let i = 0; i < prizeIndex; i++) {
-            targetCenterWeight += prizes[i].weight;
-        }
-        targetCenterWeight += prizes[prizeIndex].weight / 2;
-        
-        const targetDeg = (targetCenterWeight / totalWeight) * 360;
-        
-        // 180度補償是因為指針尖端朝上，對齊的是轉盤的正下方
-        const rotation = 3600 + (360 - targetDeg) + 180;
+        // 指針在中間尖端朝上，指向轉盤正下方。
+        // 旋轉 180 度補償對齊。
+        const rotation = 3600 + (360 - (prizeIndex * segmentDeg)) - (segmentDeg / 2) + 180;
 
         canvas.style.transition = "transform 5s cubic-bezier(0.15, 0, 0.15, 1)";
         canvas.style.transform = `rotate(${rotation - 90}deg)`;
