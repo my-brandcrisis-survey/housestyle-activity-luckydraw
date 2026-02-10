@@ -1,80 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700" rel="stylesheet">
-  <link rel="stylesheet" href="./style/style.css">
-  <title>vue-lucky-wheel</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>滿額 8888 幸運抽獎</title>
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0; /* 淺灰色背景 */
+            color: #333;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #ff6600; /* 亮橘色標題 */
+            margin-bottom: 10px;
+            font-size: 2.2em;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: 350px; /* 調整大小以符合圖片觀感 */
+            height: 350px;
+            margin: 0 auto 40px auto;
+            border-radius: 50%;
+            background-color: transparent; /* 無外框 */
+        }
+
+        #wheelCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            transform: rotate(0deg);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* 輕微陰影 */
+        }
+
+        /* 圖片中的水滴形指針 */
+        .pointer {
+            position: absolute;
+            top: 50%; /* 垂直居中 */
+            left: 50%; /* 水平居中 */
+            transform: translate(-50%, -100%); /* 向上偏移使其在上方 */
+            width: 40px; /* 指針寬度 */
+            height: 60px; /* 指針高度 */
+            z-index: 100;
+        }
+        .pointer path {
+            fill: #3b5998; /* 深藍色水滴 */
+            stroke: #ffd700; /* 金色邊框 */
+            stroke-width: 3px;
+        }
+        .pointer circle {
+            fill: #ffd700; /* 金色圓點 */
+            stroke: #3b5998;
+            stroke-width: 2px;
+        }
+
+
+        button {
+            background-color: #ff6600; /* 亮橘色按鈕 */
+            color: white;
+            border: none;
+            padding: 15px 70px;
+            font-size: 1.6em;
+            font-weight: bold;
+            border-radius: 40px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 102, 0, 0.4);
+            transition: all 0.2s ease;
+            letter-spacing: 1.5px;
+        }
+        button:hover {
+            background-color: #ff8833;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 102, 0, 0.5);
+        }
+        button:disabled {
+            background-color: #ccc;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-msg {
+            margin-top: 25px;
+            font-size: 1.3em;
+            color: #333;
+            min-height: 40px; /* 確保有足夠空間顯示訊息 */
+        }
+        .result-msg strong {
+            color: #ff6600;
+        }
+    </style>
 </head>
-
 <body>
-  <div id="app" v-cloak>
-    <!-- status buttons-->
-    <div class="game-status">
-      <div class="toggle" @click="isToggle = !isToggle"></div>
-      <transition name="slide-fade">
-        <div class="status-container" v-if="isToggle">
-          <div class="times">CHANCE <span>{{time_remaining}}</span></div>
-          <div class="buttons">
-            <button class="btn btn-primary" :class="{'active':current_year===2017}"
-              @click="setCurrentYear(2017)">2017</button>
-            <button class="btn btn-primary" :class="{'active':current_year===2018}"
-              @click="setCurrentYear(2018)">2018</button>
-            <button class="btn btn-secondary" @click="restart">Restart</button>
-          </div>
-        </div>
-      </transition>
-    </div>
 
-    <div class="lucky-wheel">
-      <div class="pointer-container">
-        <!-- pointer -->
-        <div class="pointer" ref="pointer" id="pointer" :style="{'transform':rotate_deg,'transition': prize_transition}"
-          @click="rotateHandler(num)">
-        </div>
-      </div>
-      <!-- lucky wheel -->
-      <div :class="containerClass">
-        <div v-for="(item,index) in prizes" :key="item.name" ref="item" :class="itemClass">
-          <div :class="contentClass">
-            <i class="material-icons">
-              {{item.icon}}
-            </i>
-            <span>{{item.name}}
-              <span :class="countClass">{{item.count}}</span>
-            </span>
-          </div>
-        </div>
-      </div>
+    <div class="container">
+        <h1>🎡 幸運大轉盤</h1>
+        <p class="subtitle">單筆消費滿 $8,888 即可啟動幸運輪盤</p>
 
-      <!-- display results -->
-      <transition name="slide-fade">
-        <div class="prize" v-if="isShow==isClicked">
-          <div class="prize-container">
-            <div class="prize-title">WELL</br> DONE!</div>
-            <div class="prize-title">YOU GET A FREE...</br>
-              <span class="prize-item">{{prize_name}}</span>
-            </div>
-            <div class="prize-background">
-              <template v-for="(prizeIcon,index) in 9">
-                <i class="material-icons">
-                  {{prize_icon}}
-                </i>
-              </template>
-            </div>
-          </div>
+        <div class="wheel-wrapper">
+            <svg class="pointer" viewBox="0 0 40 60">
+                <path d="M20 0 C10 0 0 15 0 25 C0 45 20 60 20 60 C20 60 40 45 40 25 C40 15 30 0 20 0 Z"/>
+                <circle cx="20" cy="20" r="8"/>
+            </svg>
+            <canvas id="wheelCanvas" width="600" height="600"></canvas>
         </div>
-      </transition>
-    </div>
-  </div>
-  </div>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.8/vue.js'></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js'></script>
-  <script src="./all.js"></script>
-</body>
-
-</html>
