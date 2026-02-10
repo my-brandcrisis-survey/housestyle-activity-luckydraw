@@ -1,31 +1,80 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>幸運大抽獎</title>
-    <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: #f0f2f5; margin: 0; }
-        
-        .container { position: relative; width: 350px; height: 350px; box-shadow: 0 0 20px rgba(0,0,0,0.1); border-radius: 50%; } /* 增加陰影和圓角 */
-        
-        /* 指針 */
-        .pointer {
-            position: absolute;
-            top: -15px; /* 調整指針位置 */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-bottom: 30px solid #e63946; /* 修正為向下指的指針 */
-            z-index: 10;
-            filter: drop-shadow(0 0 5px rgba(0,0,0,0.3)); /* 增加指針陰影 */
-        }
+<html lang="en">
 
-        #wheel {
-            width: 100%;
-            height: 100%;
-            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
-            /* 讓
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700" rel="stylesheet">
+  <link rel="stylesheet" href="./style/style.css">
+  <title>vue-lucky-wheel</title>
+</head>
+
+<body>
+  <div id="app" v-cloak>
+    <!-- status buttons-->
+    <div class="game-status">
+      <div class="toggle" @click="isToggle = !isToggle"></div>
+      <transition name="slide-fade">
+        <div class="status-container" v-if="isToggle">
+          <div class="times">CHANCE <span>{{time_remaining}}</span></div>
+          <div class="buttons">
+            <button class="btn btn-primary" :class="{'active':current_year===2017}"
+              @click="setCurrentYear(2017)">2017</button>
+            <button class="btn btn-primary" :class="{'active':current_year===2018}"
+              @click="setCurrentYear(2018)">2018</button>
+            <button class="btn btn-secondary" @click="restart">Restart</button>
+          </div>
+        </div>
+      </transition>
+    </div>
+
+    <div class="lucky-wheel">
+      <div class="pointer-container">
+        <!-- pointer -->
+        <div class="pointer" ref="pointer" id="pointer" :style="{'transform':rotate_deg,'transition': prize_transition}"
+          @click="rotateHandler(num)">
+        </div>
+      </div>
+      <!-- lucky wheel -->
+      <div :class="containerClass">
+        <div v-for="(item,index) in prizes" :key="item.name" ref="item" :class="itemClass">
+          <div :class="contentClass">
+            <i class="material-icons">
+              {{item.icon}}
+            </i>
+            <span>{{item.name}}
+              <span :class="countClass">{{item.count}}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- display results -->
+      <transition name="slide-fade">
+        <div class="prize" v-if="isShow==isClicked">
+          <div class="prize-container">
+            <div class="prize-title">WELL</br> DONE!</div>
+            <div class="prize-title">YOU GET A FREE...</br>
+              <span class="prize-item">{{prize_name}}</span>
+            </div>
+            <div class="prize-background">
+              <template v-for="(prizeIcon,index) in 9">
+                <i class="material-icons">
+                  {{prize_icon}}
+                </i>
+              </template>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </div>
+  </div>
+  </div>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.8/vue.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js'></script>
+  <script src="./all.js"></script>
+</body>
+
+</html>
