@@ -3,106 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>好時代衛浴 新春活動幸運大轉盤 - 滿額8888即可抽獎一次</title>
+    <title>好時代衛浴 新春活動幸運大轉盤</title>
     <style>
-        body {
-            font-family: "Microsoft JhengHei", sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            text-align: center;
-            width: 90%;
-            max-width: 450px;
-        }
-
-        /* 標題樣式調整 */
-        .title-line1 {
-            color: #1e90ff;
-            font-size: 28px;
-            font-weight: bold;
-            margin: 0;
-            display: block;
-        }
-        .title-line2 {
-            color: #1e90ff;
-            font-size: 28px;
-            font-weight: bold;
-            margin: 5px 0 0 0;
-            display: block;
-        }
+        /* CSS 部分保持不變，維持您要求的標題顏色與樣式 */
+        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f4f4f4; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 450px; }
+        .title-line1 { color: #1e90ff; font-size: 28px; font-weight: bold; margin: 0; display: block; }
+        .title-line2 { color: #1e90ff; font-size: 28px; font-weight: bold; margin: 5px 0 0 0; display: block; }
         .subtitle { color: #666; margin: 10px 0 30px; font-size: 16px; }
-
-        .wheel-container {
-            position: relative;
-            width: 320px;
-            height: 320px;
-            margin: 0 auto 30px;
-        }
-
-        /* 畫布 */
-        #wheel {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            transform: rotate(-90deg); /* 讓第一個獎項從正上方開始計算 */
-        }
-
-        /* 水滴形指針 */
-        .pointer-box {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(180deg); 
-            width: 50px;
-            height: 50px;
-            z-index: 10;
-        }
-
-        .pointer-svg {
-            width: 100%;
-            height: 100%;
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
-        }
-
-        button {
-            background: #ff6600;
-            color: white;
-            border: none;
-            padding: 12px 60px;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
-        }
-
+        .wheel-container { position: relative; width: 320px; height: 320px; margin: 0 auto 30px; }
+        #wheel { width: 100%; height: 100%; border-radius: 50%; transform: rotate(-90deg); }
+        .pointer-box { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(0deg); width: 50px; height: 50px; z-index: 10; }
+        .pointer-svg { width: 100%; height: 100%; filter: drop-shadow(0 -2px 5px rgba(0,0,0,0.2)); }
+        button { background: #ff6600; color: white; border: none; padding: 12px 60px; font-size: 20px; font-weight: bold; border-radius: 50px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3); }
         button:hover { background: #e65c00; transform: scale(1.05); }
-        button:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; transform: none; }
-
-        #result {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-            min-height: 24px;
-        }
-        .test-mode {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #e74c3c;
-        }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        #result { margin-top: 20px; font-size: 18px; font-weight: bold; color: #333; min-height: 24px; }
+        .test-mode { margin-top: 10px; font-size: 12px; color: #e74c3c; }
     </style>
 </head>
 <body>
@@ -115,8 +32,8 @@
     <div class="wheel-container">
         <div class="pointer-box">
             <svg class="pointer-svg" viewBox="0 0 100 100">
-                <path d="M50 0 C30 0 15 25 15 45 C15 70 50 100 50 100 C50 100 85 70 85 45 C85 25 70 0 50 0 Z" fill="#3b5998" stroke="#ffd700" stroke-width="4"/>
-                <circle cx="50" cy="40" r="12" fill="#ffd700"/>
+                <path d="M50 0 L85 55 C85 75 70 100 50 100 C30 100 15 75 15 55 Z" fill="#3b5998" stroke="#ffd700" stroke-width="4"/>
+                <circle cx="50" cy="65" r="12" fill="#ffd700"/>
             </svg>
         </div>
         <canvas id="wheel" width="600" height="600"></canvas>
@@ -128,7 +45,6 @@
 </div>
 
 <script>
-    // 測試模式下自動清除紀錄
     localStorage.removeItem('myResult');
 
     const canvas = document.getElementById('wheel');
@@ -136,88 +52,91 @@
     const spinBtn = document.getElementById('spinBtn');
     const resultDiv = document.getElementById('result');
 
-    // 1. 設定獎項、顏色與機率 (Weight)
     const prizes = [
-        { name: 'A賞: 單筆金額享8折優惠', weight: 1, color: '#ff6600' },
-        { name: 'B賞: 獲得指定配件乙個', weight: 6, color: '#ffffff' },
-        { name: 'C賞: 獲得GROHE清潔劑乙個', weight: 10, color: '#ff6600' },
-        { name: 'D賞: 單筆金額享9折優惠', weight: 23, color: '#ffffff' },
-        { name: 'E賞: 獲得衛生紙套乙個', weight: 60, color: '#ff6600' }
+        { name: 'A賞: 8折', weight: 1, color: '#ff6600' },
+        { name: 'B賞: 配件', weight: 6, color: '#ffffff' },
+        { name: 'C賞: 清潔劑', weight: 10, color: '#ff6600' },
+        { name: 'D賞: 9折', weight: 23, color: '#ffffff' },
+        { name: 'E賞: 衛生紙套', weight: 60, color: '#ff6600' }
     ];
 
     const totalWeight = prizes.reduce((sum, p) => sum + p.weight, 0);
     let isSpinning = false;
 
-    // 檢查是否抽過
-    const savedPrize = localStorage.getItem('myResult');
-    if (savedPrize) {
-        spinBtn.disabled = true;
-        resultDiv.innerHTML = `您已參加過抽獎，獲得：<span style="color:#ff6600">${savedPrize}</span>`;
-    }
-
-    // 2. 繪製轉盤函數
+    // --- 修改重點：繪製不等大的扇形 ---
     function drawWheel() {
-        const numPrizes = prizes.length;
-        const arc = (Math.PI * 2) / numPrizes;
+        let currentAngle = 0;
 
         prizes.forEach((p, i) => {
-            const angle = i * arc;
+            // 根據權重計算該獎項佔據的角度 (弧度制)
+            const arc = (p.weight / totalWeight) * (Math.PI * 2);
             
-            // 畫扇形
             ctx.beginPath();
             ctx.fillStyle = p.color;
             ctx.moveTo(300, 300);
-            ctx.arc(300, 300, 300, angle, angle + arc);
+            ctx.arc(300, 300, 300, currentAngle, currentAngle + arc);
             ctx.fill();
             ctx.strokeStyle = "#ddd";
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 1;
             ctx.stroke();
 
             // 畫文字
             ctx.save();
             ctx.translate(300, 300);
-            ctx.rotate(angle + arc / 2);
+            ctx.rotate(currentAngle + arc / 2);
             ctx.textAlign = "right";
             ctx.fillStyle = (p.color === '#ffffff') ? '#ff6600' : '#ffffff';
-            ctx.font = "bold 40px Microsoft JhengHei";
-            ctx.fillText(p.name.split(':')[0], 250, 15); // 顯示 A賞, B賞...
+            
+            // 如果扇形太小 (如 A賞 1%)，縮小字體以免重疊
+            const fontSize = p.weight < 5 ? "24px" : "40px";
+            ctx.font = `bold ${fontSize} Microsoft JhengHei`;
+            
+            ctx.fillText(p.name.split(':')[0], 250, 10);
             ctx.restore();
+
+            currentAngle += arc; // 累加角度給下一個獎項
         });
     }
 
-    // 3. 根據機率計算結果
     function getWeightedResult() {
         let random = Math.random() * totalWeight;
+        let cumulativeWeight = 0;
         for (let i = 0; i < prizes.length; i++) {
-            if (random < prizes[i].weight) return i;
-            random -= prizes[i].weight;
+            cumulativeWeight += prizes[i].weight;
+            if (random < cumulativeWeight) return i;
         }
         return prizes.length - 1;
     }
 
-    // 4. 抽獎動作
     spinBtn.onclick = () => {
-        if (isSpinning || localStorage.getItem('myResult')) return;
-
+        if (isSpinning) return;
         isSpinning = true;
         spinBtn.disabled = true;
         
         const prizeIndex = getWeightedResult();
-        const segmentDeg = 360 / prizes.length;
         
-        // 計算旋轉度數 (至少轉5圈 + 抽中獎項的角度)
-        // 減去 segmentDeg/2 是為了讓指針停在扇形正中間
-        const rotation = 3600 + (360 - (prizeIndex * segmentDeg)) - (segmentDeg / 2);
+        // 計算旋轉度數
+        // 我們需要計算「目標獎項中心點」在圓盤上的角度
+        let targetCenterWeight = 0;
+        for(let i = 0; i < prizeIndex; i++) {
+            targetCenterWeight += prizes[i].weight;
+        }
+        targetCenterWeight += prizes[prizeIndex].weight / 2;
+        
+        const targetDeg = (targetCenterWeight / totalWeight) * 360;
+        
+        // 180度補償是因為指針尖端朝上，對齊的是轉盤的正下方
+        const rotation = 3600 + (360 - targetDeg) + 180;
 
         canvas.style.transition = "transform 5s cubic-bezier(0.15, 0, 0.15, 1)";
-        canvas.style.transform = `rotate(${rotation - 90}deg)`; // -90度是修正初始繪製偏移
+        canvas.style.transform = `rotate(${rotation - 90}deg)`;
 
         setTimeout(() => {
             const winner = prizes[prizeIndex].name;
             resultDiv.innerHTML = `🎉 恭喜中獎：<span style="color:#ff6600">${winner}</span>`;
-            localStorage.setItem('myResult', winner);
-            alert(`恭喜您抽中：${winner}！\n請截圖告知店員。`);
+            alert(`恭喜您抽中：${winner}！`);
             isSpinning = false;
+            spinBtn.disabled = false;
         }, 5200);
     };
 
