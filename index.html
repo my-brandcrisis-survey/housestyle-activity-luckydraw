@@ -90,7 +90,7 @@
 <body>
 
 <div class="card">
-    <h1>🎡 幸運大轉盤</h1>
+    <h1>🎡 好時代衛浴 新春活動幸運大轉盤</h1>
     <p class="subtitle">單筆消費滿 $8,888 即可啟動幸運輪盤</p>
 
     <div class="wheel-container">
@@ -115,11 +115,11 @@
 
     // 1. 設定獎項、顏色與機率 (Weight)
     const prizes = [
-        { name: 'A賞: 8折', weight: 1, color: '#ff6600' },
-        { name: 'B賞: 指定配件', weight: 6, color: '#ffffff' },
-        { name: 'C賞: 清潔劑', weight: 10, color: '#ff6600' },
-        { name: 'D賞: 9折', weight: 23, color: '#ffffff' },
-        { name: 'E賞: 衛生紙套', weight: 60, color: '#ff6600' }
+        { name: 'A賞: 單筆金額享8折優惠', weight: 1, color: '#ff6600' },
+        { name: 'B賞: 獲得指定配件乙個', weight: 6, color: '#ffffff' },
+        { name: 'C賞: 獲得GROHE清潔劑乙個', weight: 10, color: '#ff6600' },
+        { name: 'D賞: 單筆金額享9折優惠', weight: 23, color: '#ffffff' },
+        { name: 'E賞: 獲得好時代獨家衛生紙套乙個', weight: 60, color: '#ff6600' }
     ];
 
     const totalWeight = prizes.reduce((sum, p) => sum + p.weight, 0);
