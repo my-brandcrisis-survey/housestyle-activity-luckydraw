@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>幸運大轉盤 - 滿額8888抽獎</title>
+    <title>好時代衛浴 新春活動幸運大轉盤 - 滿額8888即可抽獎一次</title>
     <style>
         body {
             font-family: "Microsoft JhengHei", sans-serif;
@@ -26,8 +26,21 @@
             max-width: 450px;
         }
 
-        h1 { color: #ff6600; margin: 0; font-size: 28px; }
-        h1 span { font-size: 24px; vertical-align: middle; margin-right: 10px; }
+        /* 標題樣式調整 */
+        .title-line1 {
+            color: #1e90ff;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+            display: block;
+        }
+        .title-line2 {
+            color: #1e90ff;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 5px 0 0 0;
+            display: block;
+        }
         .subtitle { color: #666; margin: 10px 0 30px; font-size: 16px; }
 
         .wheel-container {
@@ -50,7 +63,7 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) rotate(0deg); 
             width: 50px;
             height: 50px;
             z-index: 10;
@@ -85,12 +98,18 @@
             color: #333;
             min-height: 24px;
         }
+        .test-mode {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #e74c3c;
+        }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h1>🎡 幸運大轉盤</h1>
+    <span class="title-line1">好時代衛浴</span>
+    <span class="title-line2">新春活動幸運大轉盤</span>
     <p class="subtitle">單筆消費滿 $8,888 即可啟動幸運輪盤</p>
 
     <div class="wheel-container">
@@ -105,9 +124,13 @@
 
     <button id="spinBtn">開始抽獎</button>
     <div id="result"></div>
+    <p class="test-mode">⚠️ 目前為測試模式：重新整理網頁即可再次抽獎</p>
 </div>
 
 <script>
+    // 測試模式下自動清除紀錄
+    localStorage.removeItem('myResult');
+
     const canvas = document.getElementById('wheel');
     const ctx = canvas.getContext('2d');
     const spinBtn = document.getElementById('spinBtn');
@@ -115,11 +138,11 @@
 
     // 1. 設定獎項、顏色與機率 (Weight)
     const prizes = [
-        { name: 'A賞: 8折', weight: 1, color: '#ff6600' },
-        { name: 'B賞: 指定配件', weight: 6, color: '#ffffff' },
-        { name: 'C賞: 清潔劑', weight: 10, color: '#ff6600' },
-        { name: 'D賞: 9折', weight: 23, color: '#ffffff' },
-        { name: 'E賞: 衛生紙套', weight: 60, color: '#ff6600' }
+        { name: 'A賞: 單筆金額享8折優惠', weight: 1, color: '#ff6600' },
+        { name: 'B賞: 獲得指定配件乙個', weight: 6, color: '#ffffff' },
+        { name: 'C賞: 獲得GROHE清潔劑乙個', weight: 10, color: '#ff6600' },
+        { name: 'D賞: 單筆金額享9折優惠', weight: 23, color: '#ffffff' },
+        { name: 'E賞: 獲得衛生紙套乙個', weight: 60, color: '#ff6600' }
     ];
 
     const totalWeight = prizes.reduce((sum, p) => sum + p.weight, 0);
